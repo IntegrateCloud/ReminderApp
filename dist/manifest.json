@@ -1,0 +1,19 @@
+{
+  "name": "Reminder App",
+  "author": {
+    "name": "Integrate Cloud",
+    "email": "support@integratecloud.com",
+    "url": "https://support.integratecloud.com/"
+  },
+  "defaultLocale": "en",
+  "private": true,
+  "location": {
+    "support": {
+      "ticket_sidebar": "assets/ticket_sidebar.html",
+      "nav_bar": "assets/nav_bar.html"
+    }
+  },
+  "termsConditionsURL": "https://support.integratecloud.com/",
+  "version": "1.0",
+  "frameworkVersion": "2.0"
+}

@@ -1,0 +1,6 @@
+{
+  "app": {
+    "description": "An app that is used to sends the reminder in email",
+    "name": "Zendesk Reminder App"
+  }
+}

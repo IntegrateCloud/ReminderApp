@@ -1,0 +1,12 @@
+node_modules/
+.vscode/
+
+# Build files.
+dist/tmp/
+dist/assets/*.html
+dist/assets/*.js
+dist/.zat
+webpack-stats.json
+
+# Yarn.
+yarn-error.log
