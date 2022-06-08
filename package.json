@@ -53,6 +53,8 @@
     "@zendeskgarden/react-forms": "^8.52.0",
     "@zendeskgarden/react-grid": "^8.52.0",
     "@zendeskgarden/react-loaders": "^8.52.0",
+    "@zendeskgarden/react-tables": "^8.52.0",
+    "@zendeskgarden/react-tabs": "^8.52.0",
     "@zendeskgarden/react-theming": "^8.52.0",
     "@zendeskgarden/react-typography": "^8.52.0",
     "@zendeskgarden/svg-icons": "^6.32.0",

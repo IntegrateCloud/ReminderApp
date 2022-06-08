@@ -4,7 +4,7 @@ import 'promise-polyfill/src/polyfill';
 import { ThemeProvider, DEFAULT_THEME } from '@zendeskgarden/react-theming';
 
 import NavBar from './components/NavBar';
-import '@zendeskgarden/css-bedrock';
+import '@zendeskgarden/css-bedrock/src/index.css';
 import zafClient from './zafClient';
 import ZAFContext from './context/ZAFContext';
 
