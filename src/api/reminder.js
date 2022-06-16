@@ -9,18 +9,18 @@ class Reminder {
 
   getReminders(parameters) {
     const allReminders = this.storage.get(this.localStorageName);
-    const filteredReminders = allReminders.filter((reminder) => {
-      let accepted = true;
+    allReminders.forEach((reminderKey, reminder) => {
+      let display = true;
       parameters.forEach((parameterKey, parameterValue) => {
         if (reminder[parameterKey] !== parameterValue) {
-          accepted = false;
+          display = false;
         }
       });
 
-      return accepted;
+      allReminders[reminderKey].display = display;
     });
 
-    return filteredReminders;
+    return allReminders;
   }
 
   addReminder(data) {
