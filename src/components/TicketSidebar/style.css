@@ -1,6 +1,17 @@
-.App {
-  padding: 10px;
-}
 .bg-red {
   background-color: #e35b66;
+}
+.hidden  {
+  display: none;
+}
+.u-mt-sm {
+  margin-top: 8px;
+}
+.u-mr-sm {
+  margin-right: 8px;
+}
+.u-container {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #d8dcde;
 }
