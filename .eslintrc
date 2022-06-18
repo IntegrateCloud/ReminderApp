@@ -30,7 +30,8 @@
           "minProperties": 3
         }
       }
-    ]
+    ],
+    "react/prop-types": "off"
   },
   "env": {
     "browser": true
