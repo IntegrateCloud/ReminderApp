@@ -1,21 +1,27 @@
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useId } from 'react';
 import { Col, Grid, Row } from '@zendeskgarden/react-grid';
 
-// eslint-disable-next-line object-curly-newline
-import { Dropdown, Multiselect, Menu, Item, Field as DField, Label as DLabel } from '@zendeskgarden/react-dropdowns';
+import {
+  Dropdown,
+  Multiselect,
+  Menu,
+  Item,
+  Field as DField,
+  Label as DLabel,
+} from '@zendeskgarden/react-dropdowns';
 import { Tag } from '@zendeskgarden/react-tags';
-import { Field, Label, MediaInput } from '@zendeskgarden/react-forms';
+import { Field, Label, MediaInput, Input } from '@zendeskgarden/react-forms';
 import { Button } from '@zendeskgarden/react-buttons';
+import { Datepicker } from '@zendeskgarden/react-datepickers';
 
 import CalendarIcon from '@zendeskgarden/svg-icons/src/12/calendar-stroke.svg';
 import TimeIcon from '@zendeskgarden/svg-icons/src/12/clock-stroke.svg';
 import NotificationIcon from '@zendeskgarden/svg-icons/src/12/notification-stroke.svg';
 
-function AddEditReminder({ client, initialFormData }) {
+function AddEditReminder({ client, initialFormData, handleFormSubmit, resizeApp, showAddForm }) {
   const formId = useId();
 
   const [formData, setFormData] = useState(initialFormData);
-  const [selectedItems, setSelectedItems] = useState([]);
   const [dropdownValue, setDropdownValue] = useState('');
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [matchingOptions, setMatchingOptions] = useState([]);
@@ -61,10 +67,6 @@ function AddEditReminder({ client, initialFormData }) {
     ));
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-  };
-
   useEffect(() => {
     if (dropdownValue !== '') {
       setIsSearchLoading(true);
@@ -75,6 +77,14 @@ function AddEditReminder({ client, initialFormData }) {
     }
   }, [dropdownValue]);
 
+  useLayoutEffect(() => {
+    resizeApp();
+  }, [matchingOptions]);
+
+  useEffect(() => {
+    setFormData(initialFormData);
+  }, [showAddForm, initialFormData]);
+
   return (
     <form id={formId} className="u-container add-reminder-form">
       <input type="hidden" name="ticket_id" value={formData.ticket_id} />
@@ -84,20 +94,23 @@ function AddEditReminder({ client, initialFormData }) {
           <Col>
             <Field>
               <Label hidden>Date</Label>
-              <MediaInput
-                name="date"
-                placeholder="Date"
-                end={<CalendarIcon />}
-                isCompact
+              <Datepicker
                 value={formData.date}
-                onChange={handleFormInputChange}
-              />
+                onChange={(value) => {
+                  setFormInputValue('date', value);
+                }}
+                minValue={new Date()}
+                isCompact
+              >
+                <MediaInput placeholder="Date" end={<CalendarIcon />} isCompact />
+              </Datepicker>
             </Field>
           </Col>
           <Col>
             <Field>
               <Label hidden>Time</Label>
-              <MediaInput
+              <Input
+                type="time"
                 name="time"
                 placeholder="Time"
                 end={<TimeIcon />}
@@ -127,9 +140,12 @@ function AddEditReminder({ client, initialFormData }) {
           <Col>
             <Dropdown
               inputValue={dropdownValue}
-              selectedItems={selectedItems}
-              onSelect={(items) => setSelectedItems(items)}
-              downshiftProps={{ defaultHighlightedIndex: 0, itemToString: (item) => (item ? item.email : '') }}
+              selectedItems={formData.agents}
+              onSelect={(items) => setFormInputValue('agents', items)}
+              downshiftProps={{
+                defaultHighlightedIndex: 0,
+                itemToString: (item) => (item ? item.email : ''),
+              }}
               isCompact
               onInputValueChange={(value) => setDropdownValue(value)}
             >
@@ -151,7 +167,7 @@ function AddEditReminder({ client, initialFormData }) {
         </Row>
         <Row className="u-mt-sm">
           <Col textAlign="end">
-            <Button isPrimary size="small" onClick={handleFormSubmit}>
+            <Button isPrimary size="small" onClick={() => handleFormSubmit(formData)}>
               Set Reminder
             </Button>
           </Col>

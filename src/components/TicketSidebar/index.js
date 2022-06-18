@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
-import { Spinner } from '@zendeskgarden/react-loaders';
-import { XL, LG } from '@zendeskgarden/react-typography';
+
 import { Field, Label, Checkbox } from '@zendeskgarden/react-forms';
-import { Col, Grid, Row } from '@zendeskgarden/react-grid';
 import { Button, IconButton } from '@zendeskgarden/react-buttons';
+
+import { Col, Grid, Row } from '@zendeskgarden/react-grid';
+import { XL, LG } from '@zendeskgarden/react-typography';
 
 import CalendarIcon from '@zendeskgarden/svg-icons/src/12/calendar-stroke.svg';
 import TimeIcon from '@zendeskgarden/svg-icons/src/12/clock-stroke.svg';
@@ -13,6 +14,7 @@ import CheckIcon from '@zendeskgarden/svg-icons/src/12/check-lg-fill.svg';
 
 import ZAFContext from '../../context/ZAFContext';
 import AddEditReminder from './AddEditReminder';
+import Reminder from '../../utils/reminder';
 
 import './style.css';
 
@@ -20,6 +22,7 @@ const MAX_HEIGHT = 500;
 
 function TicketSidebar() {
   const app = useContext(ZAFContext);
+  const reminder = new Reminder(app.installationId);
 
   const resizeApp = () => {
     const newHeight = Math.min(document.body.clientHeight, MAX_HEIGHT);
@@ -33,12 +36,14 @@ function TicketSidebar() {
     subMessage: null,
   });
 
-  const initialFormValue = {
-    date: '',
+  const [initialFormValue, setInitialFormValue] = useState({
+    ticket_id: '',
+    author_id: '',
+    date: new Date(),
     time: '',
     reminder: '',
-  };
-
+    agents: [],
+  });
   const [currentUser, setCurrentUser] = useState({});
   const [ticketData, setTicketData] = useState({});
   const [showAddForm, setShowAddForm] = useState(false);
@@ -64,6 +69,16 @@ function TicketSidebar() {
 
   useEffect(() => {
     if (currentUser.id && ticketData.id) {
+      setInitialFormValue((prevState) => {
+        const newState = {
+          ...prevState,
+          reminder: ticketData.subject,
+          ticket_id: ticketData.id,
+          author_id: currentUser.id,
+          agents: [{ id: currentUser.id, email: currentUser.email }],
+        };
+        return newState;
+      });
       setIsLoading({
         status: false,
         message: '',
@@ -76,11 +91,15 @@ function TicketSidebar() {
     resizeApp();
   }, [currentUser, ticketData, showAddForm]);
 
+  const handleFormSubmit = (formData) => {
+    reminder.addReminder(formData);
+    setShowAddForm(false);
+  };
+
   return (
     <div className="App">
       {isLoading.status === true && (
         <div className="loading-div">
-          <Spinner size="128" />
           <XL>{isLoading.message}</XL>
           {isLoading.subMessage && <LG>{isLoading.subMessage}</LG>}
         </div>
@@ -141,11 +160,11 @@ function TicketSidebar() {
           <div className={showAddForm ? '' : 'hidden'}>
             <AddEditReminder
               client={app.client}
-              initialFormData={{
-                ...initialFormValue,
-                ticket_id: ticketData.id,
-                author_id: currentUser.id,
-              }}
+              initialFormData={initialFormValue}
+              handleFormSubmit={handleFormSubmit}
+              resizeApp={resizeApp}
+              currentUser={currentUser}
+              showAddForm={showAddForm}
             />
           </div>
           <div className={`u-mt-sm ${showAddForm ? 'hidden' : ''}`}>
